@@ -1,22 +1,30 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Bugporter.API.Functions
 {
-    public static class Function1
+    public class Function1
     {
+        private readonly HelloWorld _helloWorld;
+
+        public Function1(HelloWorld helloWorld)
+        {
+            _helloWorld = helloWorld;
+        }
+
         [FunctionName("Function1")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
+            _helloWorld.Run();
+
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string name = req.Query["name"];
